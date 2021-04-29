@@ -67,7 +67,7 @@ export default function App() {
         data={task}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => pressHandler(item.key)}>
-            <Text>{item.text}</Text>
+            <TextTasks>{item.text}</TextTasks>
           </TouchableOpacity>
         )}
       />
@@ -126,4 +126,9 @@ const TitleTask = styled.Text`
   font-family: Roboto;
   font-size: 24px;
   color: #c7c4c1;
+`;
+const TextTasks = styled.Text`
+  font-family: Roboto;
+  font-size: 24px;
+  color: #202020;
 `;
