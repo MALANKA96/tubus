@@ -7,10 +7,42 @@ import {
   TextInput,
   Alert,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 import styled from "styled-components/native";
 
 export default function App() {
+  const [task, setTask] = React.useState([
+    { text: "react", key: "1" },
+    { text: "native", key: "2" },
+    { text: "todo list app", key: "3" },
+  ]);
+
+  const pressHandler = (key) => {
+    setTask((prevTask) => {
+      return prevTask.filter((task) => task.key != key);
+    });
+  };
+
+  const submitHandler = (text) => {
+    if (text.length > 3) {
+      setText("");
+      setTask((prevTask) => {
+        return [{ text, key: Math.random().toString() }, ...prevTask];
+      });
+    } else {
+      Alert.alert("OOPS", "Todo must be over 3 characters long", [
+        { text: "Understood", onPress: () => console.log("alert closed") },
+      ]);
+    }
+  };
+
+  [text, setText] = React.useState("");
+
+  const changeHandler = (val) => {
+    setText(val);
+  };
+
   return (
     <Container>
       <Header>
@@ -19,14 +51,26 @@ export default function App() {
         </NameApp>
       </Header>
       <InputTodo>
-        <TextInputTodo placeholder="write text task..." />
-        <ButtonAddTodo>
-          <TextButton onPress={() => Alert.alert("add task")}>ADD</TextButton>
+        <TextInputTodo
+          placeholder="write text task..."
+          onChangeText={changeHandler}
+          value={text}
+        />
+        <ButtonAddTodo onPress={() => submitHandler(text)}>
+          <TextButton>ADD</TextButton>
         </ButtonAddTodo>
       </InputTodo>
       <Middle>
         <TitleTask>next task</TitleTask>
       </Middle>
+      <FlatList
+        data={task}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => pressHandler(item.key)}>
+            <Text>{item.text}</Text>
+          </TouchableOpacity>
+        )}
+      />
     </Container>
   );
 }
