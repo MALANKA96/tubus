@@ -13,9 +13,9 @@ import styled from "styled-components/native";
 
 export default function App() {
   const [task, setTask] = React.useState([
-    { text: "react", key: "1" },
+    /*  { text: "react", key: "1" },
     { text: "native", key: "2" },
-    { text: "todo list app", key: "3" },
+    { text: "todo list app", key: "3" }, */
   ]);
 
   const pressHandler = (key) => {
@@ -28,10 +28,14 @@ export default function App() {
     if (text.length > 3) {
       setText("");
       setTask((prevTask) => {
-        return [{ text, key: Math.random().toString() }, ...prevTask];
+        return [...prevTask, { text, key: (task.length + 1).toString() }];
       });
+    } else if (text.length == 0) {
+      Alert.alert("Oops...", "Nothing to add, please write a task", [
+        { text: "Understood", onPress: () => console.log("alert closed") },
+      ]);
     } else {
-      Alert.alert("OOPS", "Todo must be over 3 characters long", [
+      Alert.alert("Oops...", "Task must be over 3 characters long", [
         { text: "Understood", onPress: () => console.log("alert closed") },
       ]);
     }
@@ -66,8 +70,10 @@ export default function App() {
       <FlatList
         data={task}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => pressHandler(item.key)}>
-            <TextTasks>{item.text}</TextTasks>
+          <TouchableOpacity /* onPress={() => pressHandler(item.key) */>
+            <TextTasks>
+              {item.key}` {item.text}
+            </TextTasks>
           </TouchableOpacity>
         )}
       />
@@ -128,7 +134,11 @@ const TitleTask = styled.Text`
   color: #c7c4c1;
 `;
 const TextTasks = styled.Text`
+  height: 36px;
+  line-height: 41px;
+  margin-top: 5px;
   font-family: Roboto;
   font-size: 24px;
-  color: #202020;
+  color: #c7c4c1;
+  background-color: #3f51b5;
 `;
