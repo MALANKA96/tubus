@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import {
   Animated,
   Text,
@@ -7,18 +7,34 @@ import {
   TextInput,
   Alert,
   TouchableOpacity,
+  TouchableHighlight,
   FlatList,
+  CheckBox,
+  StyleSheet,
 } from "react-native";
+
+import Swipeable from "react-native-swipeable-row";
 import styled from "styled-components/native";
 
 export default function App() {
   const [task, setTask] = React.useState([
-    /*  { text: "react", key: "1" },
-    { text: "native", key: "2" },
-    { text: "todo list app", key: "3" }, */
+    { text: "asdsad", key: "1", isDone: true },
+    { text: "758758", key: "2", isDone: false },
   ]);
 
-  const pressHandler = (key) => {
+  React.useEffect(() => {}, [task]);
+
+  const [text, setText] = React.useState("");
+
+  const pressDone = (key) => {
+    setTask((prevTask) => {
+      return [...prevTask];
+    });
+    task[key - 1].isDone
+      ? (task[key - 1].isDone = false)
+      : (task[key - 1].isDone = true);
+  };
+  const pressDelete = (key) => {
     setTask((prevTask) => {
       return prevTask.filter((task) => task.key != key);
     });
@@ -28,7 +44,10 @@ export default function App() {
     if (text.length > 3) {
       setText("");
       setTask((prevTask) => {
-        return [...prevTask, { text, key: (task.length + 1).toString() }];
+        return [
+          ...prevTask,
+          { text, key: (task.length + 1).toString(), isDone: false },
+        ];
       });
     } else if (text.length == 0) {
       Alert.alert("Oops...", "Nothing to add, please write a task", [
@@ -40,8 +59,6 @@ export default function App() {
       ]);
     }
   };
-
-  [text, setText] = React.useState("");
 
   const changeHandler = (val) => {
     setText(val);
@@ -70,11 +87,23 @@ export default function App() {
       <FlatList
         data={task}
         renderItem={({ item }) => (
-          <TouchableOpacity /* onPress={() => pressHandler(item.key) */>
-            <TextTasks>
-              {item.key}` {item.text}
-            </TextTasks>
-          </TouchableOpacity>
+          <Swipeable
+            leftButtons={[
+              <TouchableOpacity onPress={() => pressDone(item.key)}>
+                <TextButtonDone>done</TextButtonDone>
+              </TouchableOpacity>,
+            ]}
+            rightButtons={[
+              <TouchableOpacity>
+                <TextButtonEdit>edit</TextButtonEdit>
+              </TouchableOpacity>,
+              <TouchableOpacity onPress={() => pressDelete(item.key)}>
+                <TextButtonDelete>delete</TextButtonDelete>
+              </TouchableOpacity>,
+            ]}
+          >
+            <TextTasks props={item}> {item.text} </TextTasks>
+          </Swipeable>
         )}
       />
     </Container>
@@ -87,7 +116,7 @@ const Container = styled.View`
   background-color: #c7c4c1;
 `;
 const Header = styled.View`
-  background-color: #3f51b5;
+  background-color: #2c387e;
 `;
 
 const NameApp = styled.Text`
@@ -141,4 +170,44 @@ const TextTasks = styled.Text`
   font-size: 24px;
   color: #c7c4c1;
   background-color: #3f51b5;
+  text-decoration: ${(props) => props.props.isDone && "line-through"};
+`;
+const TextButtonDelete = styled.Text`
+  text-align: left;
+  height: 36px;
+  line-height: 41px;
+  margin-top: 5px;
+  padding-left: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-family: Roboto;
+  font-size: 24px;
+  color: #c7c4c1;
+  background-color: #ff1744;
+`;
+const TextButtonEdit = styled.Text`
+  text-align: left;
+  height: 36px;
+  line-height: 41px;
+  margin-top: 5px;
+  padding-left: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-family: Roboto;
+  font-size: 24px;
+  color: #c7c4c1;
+  background-color: #b28704;
+`;
+const TextButtonDone = styled.Text`
+  text-align: right;
+  height: 36px;
+  line-height: 41px;
+  margin-top: 5px;
+  padding-right: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-family: Roboto;
+  font-size: 24px;
+  color: #c7c4c1;
+  background-color: #357a38;
 `;
